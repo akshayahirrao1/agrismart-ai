@@ -1,0 +1,24 @@
+# Local testing only — MongoDB stays on Atlas (cloud), not containerized here.
+# Use this to confirm both images actually work together before deploying
+# each one separately to Render.
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      # Override to reach the ml_service container by its service name
+      # instead of localhost, since they're on the same Docker network here.
+      - ML_SERVICE_URL=http://ml_service:8000
+    depends_on:
+      - ml_service
+    restart: unless-stopped
+
+  ml_service:
+    build: ./backend/ml_service
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

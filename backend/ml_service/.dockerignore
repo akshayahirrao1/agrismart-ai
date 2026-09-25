@@ -1,0 +1,10 @@
+venv
+__pycache__
+*.pyc
+.env
+models
+.git
+.gitignore
+.DS_Store
+# Kept locally as a backup per project decision, not deployed
+train_disease_model.py
