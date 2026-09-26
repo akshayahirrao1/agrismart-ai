@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import ResultCard from "@/components/ResultCard";
 import Loader from "@/components/Loader";
 import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface PredictionResult {
   disease: string;
@@ -79,6 +80,7 @@ const mockPrediction = (crop: string): Promise<PredictionResult> => {
 };
 
 export default function PlantDisease() {
+  const { t } = useTranslation();
   const [cropType, setCropType] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -145,7 +147,7 @@ export default function PlantDisease() {
       const prediction = await mockPrediction(cropType);
       setResult(prediction);
       toast({
-        title: "Analysis Complete!",
+        title: t("common.success"),
         description: `Detected: ${prediction.disease}`,
       });
     } catch (error) {
@@ -190,10 +192,10 @@ export default function PlantDisease() {
             <Bug className="w-8 h-8 text-accent-foreground" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Plant Disease Detection
+            {t("disease.title")}
           </h1>
           <p className="text-muted-foreground">
-            Upload an image of your plant to detect diseases and get treatment recommendations.
+            {t("disease.subtitle")}
           </p>
         </motion.div>
 
@@ -208,15 +210,15 @@ export default function PlantDisease() {
             <div className="bg-card rounded-2xl border-2 border-border p-6 shadow-card">
               <h2 className="font-display font-semibold text-xl text-foreground mb-6 flex items-center gap-2">
                 <Camera className="w-5 h-5 text-primary" />
-                Upload Plant Image
+                {t("disease.uploadImage")}
               </h2>
 
               {/* Crop Type Selection */}
               <div className="mb-6 space-y-2">
-                <Label className="text-sm font-medium text-foreground">Crop Type</Label>
+                <Label className="text-sm font-medium text-foreground">{t("disease.cropType")}</Label>
                 <Select value={cropType} onValueChange={setCropType}>
                   <SelectTrigger className="h-12 rounded-lg border-2">
-                    <SelectValue placeholder="Select crop type" />
+                    <SelectValue placeholder={t("disease.selectCrop")} />
                   </SelectTrigger>
                   <SelectContent>
                     {cropTypes.map((type) => (
@@ -269,10 +271,10 @@ export default function PlantDisease() {
                     </div>
                     <div>
                       <p className="font-medium text-foreground">
-                        Drop your image here or click to upload
+                        {t("disease.dragDrop")}
                       </p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Supports JPG, PNG, WEBP (max 10MB)
+                        {t("disease.supportedFormats")}
                       </p>
                     </div>
                   </div>
@@ -290,12 +292,12 @@ export default function PlantDisease() {
                   {loading ? (
                     <>
                       <Loader variant="dots" size="sm" text="" />
-                      Analyzing...
+                      {t("disease.detecting")}
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-5 h-5" />
-                      Detect Disease
+                      {t("disease.detect")}
                     </>
                   )}
                 </Button>
@@ -305,7 +307,7 @@ export default function PlantDisease() {
                   onClick={handleClear}
                   disabled={loading || (!image && !cropType)}
                 >
-                  Clear
+                  {t("common.cancel")}
                 </Button>
               </div>
             </div>
@@ -334,7 +336,7 @@ export default function PlantDisease() {
           >
             {loading && (
               <div className="bg-card rounded-2xl border-2 border-border p-12 shadow-card flex items-center justify-center min-h-[400px]">
-                <Loader text="Analyzing plant image..." variant="leaf" />
+                <Loader text={t("disease.detecting")} variant="leaf" />
               </div>
             )}
 
@@ -347,7 +349,7 @@ export default function PlantDisease() {
                   No Analysis Yet
                 </h3>
                 <p className="text-muted-foreground max-w-sm">
-                  Upload a plant image and select the crop type to detect diseases.
+                  {t("disease.subtitle")}
                 </p>
               </div>
             )}
@@ -366,7 +368,7 @@ export default function PlantDisease() {
                           {result.disease}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          Detected Disease
+                          {t("disease.result")}
                         </p>
                       </div>
                     </div>
@@ -376,7 +378,7 @@ export default function PlantDisease() {
                   </div>
 
                   <div className="flex items-center gap-2 mt-4">
-                    <span className="text-sm text-muted-foreground">Confidence:</span>
+                    <span className="text-sm text-muted-foreground">{t("disease.probability")}:</span>
                     <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
@@ -395,7 +397,7 @@ export default function PlantDisease() {
                 <div className="bg-card rounded-xl border-2 border-border p-6 shadow-card">
                   <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
                     <Shield className="w-5 h-5 text-success" />
-                    Treatment Recommendations
+                    {t("disease.treatment")}
                   </h3>
                   <ul className="space-y-3">
                     {result.treatment.map((item, index) => (
@@ -419,7 +421,7 @@ export default function PlantDisease() {
                 <div className="bg-card rounded-xl border-2 border-border p-6 shadow-card">
                   <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
                     <Info className="w-5 h-5 text-primary" />
-                    Prevention Tips
+                    {t("disease.prevention")}
                   </h3>
                   <ul className="space-y-3">
                     {result.prevention.map((item, index) => (

@@ -3,33 +3,36 @@ import { Link } from "react-router-dom";
 import { Leaf, Droplets, Bug, Cloud, ArrowRight, Sparkles, TrendingUp, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import FeatureCard from "@/components/FeatureCard";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
+  const { t } = useTranslation();
+
   const features = [
     {
-      title: "Crop Recommendation",
-      description: "AI-powered predictions to help you choose the optimal crop based on soil and weather conditions.",
+      title: t("home.cropRecommendation"),
+      description: t("home.cropDesc"),
       icon: <Leaf className="w-6 h-6" />,
       href: "/crop-prediction",
       variant: "primary" as const,
     },
     {
-      title: "Soil Moisture Analysis",
-      description: "Monitor and predict soil moisture levels to optimize irrigation and water usage.",
+      title: t("home.soilMoisture"),
+      description: t("home.soilDesc"),
       icon: <Droplets className="w-6 h-6" />,
       href: "/soil-moisture",
       variant: "soil" as const,
     },
     {
-      title: "Disease Detection",
-      description: "Upload plant images to instantly detect diseases and get treatment recommendations.",
+      title: t("home.diseaseDetection"),
+      description: t("home.diseaseDesc"),
       icon: <Bug className="w-6 h-6" />,
       href: "/plant-disease",
       variant: "accent" as const,
     },
     {
-      title: "Weather Forecast",
-      description: "Real-time weather updates and forecasts to plan your farming activities effectively.",
+      title: t("home.weatherForecast"),
+      description: t("home.weatherDesc"),
       icon: <Cloud className="w-6 h-6" />,
       href: "/weather",
       variant: "sky" as const,
@@ -37,10 +40,10 @@ export default function Home() {
   ];
 
   const stats = [
-    { value: "95%", label: "Prediction Accuracy" },
-    { value: "50K+", label: "Farmers Helped" },
-    { value: "120+", label: "Crop Varieties" },
-    { value: "24/7", label: "Support Available" },
+    { value: "95%", label: t("home.stats.accuracy") },
+    { value: "50K+", label: t("home.stats.farmers") },
+    { value: "120+", label: t("home.stats.crops") },
+    { value: "24/7", label: t("home.stats.support") },
   ];
 
   return (
@@ -73,7 +76,7 @@ export default function Home() {
             >
               <Sparkles className="w-4 h-4 text-accent" />
               <span className="text-primary-foreground/90 text-sm font-medium">
-                AI-Powered Agriculture Platform
+                {t("home.badge")}
               </span>
             </motion.div>
 
@@ -83,9 +86,9 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 leading-tight"
             >
-              Smart Farming,
+              {t("home.title1")}
               <br />
-              <span className="text-accent">Brighter Future</span>
+              <span className="text-accent">{t("home.title2")}</span>
             </motion.h1>
 
             <motion.p
@@ -94,8 +97,7 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto"
             >
-              Harness the power of artificial intelligence to make data-driven decisions 
-              for crop selection, soil management, and disease prevention.
+              {t("home.subtitle")}
             </motion.p>
 
             <motion.div
@@ -106,7 +108,7 @@ export default function Home() {
             >
               <Link to="/crop-prediction">
                 <Button variant="accent" size="xl" className="w-full sm:w-auto">
-                  Get Started
+                  {t("home.getStarted")}
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
@@ -116,7 +118,7 @@ export default function Home() {
                   size="xl" 
                   className="w-full sm:w-auto border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                 >
-                  Check Weather
+                  {t("home.checkWeather")}
                 </Button>
               </Link>
             </motion.div>
@@ -164,10 +166,10 @@ export default function Home() {
             className="text-center mb-16"
           >
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Powerful Features for Modern Farming
+              {t("home.features.title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our AI-driven tools help you make informed decisions at every step of the farming process.
+              {t("home.features.subtitle")}
             </p>
           </motion.div>
 
@@ -193,24 +195,24 @@ export default function Home() {
               viewport={{ once: true }}
             >
               <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-                Why Choose AgriSmart?
+                {t("home.whyChoose")}
               </h2>
               <div className="space-y-6">
                 {[
                   {
                     icon: <TrendingUp className="w-5 h-5" />,
-                    title: "Increase Crop Yield",
-                    description: "Make data-driven decisions that maximize your harvest potential.",
+                    title: t("home.increaseYield"),
+                    description: t("home.increaseYieldDesc"),
                   },
                   {
                     icon: <Shield className="w-5 h-5" />,
-                    title: "Reduce Risks",
-                    description: "Early disease detection and weather alerts protect your investment.",
+                    title: t("home.reduceRisks"),
+                    description: t("home.reduceRisksDesc"),
                   },
                   {
                     icon: <Droplets className="w-5 h-5" />,
-                    title: "Optimize Resources",
-                    description: "Smart irrigation suggestions help conserve water and reduce costs.",
+                    title: t("home.optimizeResources"),
+                    description: t("home.optimizeResourcesDesc"),
                   },
                 ].map((benefit, index) => (
                   <motion.div
@@ -275,15 +277,14 @@ export default function Home() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Ready to Transform Your Farm?
+              {t("home.ctaTitle")}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Join thousands of farmers who are already using AgriSmart to improve their yields 
-              and make smarter agricultural decisions.
+              {t("home.ctaSubtitle")}
             </p>
             <Link to="/crop-prediction">
               <Button variant="hero" size="xl">
-                Start Predicting Now
+                {t("home.startPredicting")}
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>

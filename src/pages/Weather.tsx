@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import ResultCard from "@/components/ResultCard";
 import Loader from "@/components/Loader";
 import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface WeatherData {
   city: string;
@@ -96,6 +97,7 @@ const WeatherIcon = ({ icon, size = "w-8 h-8" }: { icon: string; size?: string }
 };
 
 export default function Weather() {
+  const { t } = useTranslation();
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -111,7 +113,7 @@ export default function Weather() {
     if (!searchCity.trim()) {
       toast({
         title: "Invalid City",
-        description: "Please enter a city name",
+        description: t("weather.enterCity"),
         variant: "destructive",
       });
       return;
@@ -131,12 +133,12 @@ export default function Weather() {
       });
 
       toast({
-        title: "Weather Updated",
+        title: t("common.success"),
         description: `Showing weather for ${data.current.city}`,
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("common.error"),
         description: "Failed to fetch weather data",
         variant: "destructive",
       });
@@ -164,10 +166,10 @@ export default function Weather() {
             <Cloud className="w-8 h-8 text-sky-foreground" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Weather Forecast
+            {t("weather.title")}
           </h1>
           <p className="text-muted-foreground">
-            Get real-time weather updates and forecasts to plan your farming activities.
+            {t("weather.subtitle")}
           </p>
         </motion.div>
 
@@ -183,7 +185,7 @@ export default function Weather() {
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search city..."
+                placeholder={t("weather.enterCity")}
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 className="h-12 pl-10 rounded-lg border-2"
@@ -214,7 +216,7 @@ export default function Weather() {
         {/* Weather Content */}
         {loading && (
           <div className="flex items-center justify-center py-20">
-            <Loader text="Fetching weather data..." variant="leaf" />
+            <Loader text={t("weather.searching")} variant="leaf" />
           </div>
         )}
 
@@ -261,28 +263,28 @@ export default function Weather() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div className="bg-muted/50 rounded-xl p-4 text-center">
                   <Thermometer className="w-6 h-6 mx-auto text-warning mb-2" />
-                  <p className="text-sm text-muted-foreground">Feels Like</p>
+                  <p className="text-sm text-muted-foreground">{t("weather.temperature")}</p>
                   <p className="font-display font-bold text-xl text-foreground">
                     {weatherData.feelsLike}°C
                   </p>
                 </div>
                 <div className="bg-muted/50 rounded-xl p-4 text-center">
                   <Droplets className="w-6 h-6 mx-auto text-sky mb-2" />
-                  <p className="text-sm text-muted-foreground">Humidity</p>
+                  <p className="text-sm text-muted-foreground">{t("weather.humidity")}</p>
                   <p className="font-display font-bold text-xl text-foreground">
                     {weatherData.humidity}%
                   </p>
                 </div>
                 <div className="bg-muted/50 rounded-xl p-4 text-center">
                   <Wind className="w-6 h-6 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Wind Speed</p>
+                  <p className="text-sm text-muted-foreground">{t("weather.wind")}</p>
                   <p className="font-display font-bold text-xl text-foreground">
                     {weatherData.windSpeed} km/h
                   </p>
                 </div>
                 <div className="bg-muted/50 rounded-xl p-4 text-center">
                   <CloudRain className="w-6 h-6 mx-auto text-sky mb-2" />
-                  <p className="text-sm text-muted-foreground">Rain Chance</p>
+                  <p className="text-sm text-muted-foreground">{t("weather.rainfall")}</p>
                   <p className="font-display font-bold text-xl text-foreground">
                     {weatherData.rainProbability}%
                   </p>
@@ -297,7 +299,7 @@ export default function Weather() {
               transition={{ delay: 0.1 }}
             >
               <h3 className="font-display font-semibold text-xl text-foreground mb-4">
-                5-Day Forecast
+                {t("weather.forecast")}
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {forecast.map((day, index) => (
@@ -332,7 +334,7 @@ export default function Weather() {
             >
               <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
                 <Sun className="w-5 h-5 text-accent" />
-                Farming Recommendations
+                {t("weather.farmingTips")}
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {weatherData.rainProbability > 60 ? (
