@@ -9,6 +9,7 @@ import Loader from "@/components/Loader";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { predictCrop as predictCropApi } from "@/services/api";
+import { useTranslation } from "react-i18next";
 
 interface FormData {
   nitrogen: string;
@@ -37,10 +38,6 @@ const initialFormData: FormData = {
   rainfall: "",
 };
 
-// The ML model only returns a crop name + confidence. Season/growing-tip
-// copy isn't part of the model's output, so it's supplied here client-side,
-// keyed by the exact lowercase labels the model was trained on (see
-// backend/ml_service/dataset/Crop_recommendation.csv).
 const CROP_INFO: Record<string, { season: string; tips: string[] }> = {
   rice: { season: "Kharif (Monsoon)", tips: ["Requires standing water", "Best planted in June-July", "Harvest after 4-5 months"] },
   maize: { season: "Kharif/Rabi", tips: ["Grows well in warm weather", "Needs 500-800mm rainfall", "60-100 days to harvest"] },
@@ -72,6 +69,7 @@ const getCropInfo = (cropName: string) => {
 };
 
 export default function CropPrediction() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -152,11 +150,11 @@ export default function CropPrediction() {
         tips: info.tips,
       });
       toast({
-        title: "Prediction Complete!",
-        description: `Recommended crop: ${prediction.predictedCrop}`,
+        title: t("common.success"),
+        description: `${t("crop.result")}: ${prediction.predictedCrop}`,
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to get crop prediction. Please try again.";
+      const message = error instanceof Error ? error.message : t("common.error");
       toast({
         title: "Prediction Failed",
         description: message,
@@ -193,11 +191,10 @@ export default function CropPrediction() {
             <Leaf className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Crop Recommendation
+            {t("crop.title")}
           </h1>
           <p className="text-muted-foreground">
-            Enter your soil and climate parameters to get AI-powered crop recommendations 
-            tailored to your conditions.
+            {t("crop.subtitle")}
           </p>
         </motion.div>
 
@@ -211,13 +208,13 @@ export default function CropPrediction() {
             <div className="bg-card rounded-2xl border-2 border-border p-6 shadow-card">
               <h2 className="font-display font-semibold text-xl text-foreground mb-6 flex items-center gap-2">
                 <TestTube className="w-5 h-5 text-primary" />
-                Soil & Climate Parameters
+                {t("crop.title")}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
-                    label="Nitrogen (N)"
+                    label={t("crop.nitrogen")}
                     type="number"
                     placeholder="0-140"
                     value={formData.nitrogen}
@@ -227,7 +224,7 @@ export default function CropPrediction() {
                     icon={<TestTube className="w-4 h-4" />}
                   />
                   <InputField
-                    label="Phosphorus (P)"
+                    label={t("crop.phosphorus")}
                     type="number"
                     placeholder="0-145"
                     value={formData.phosphorus}
@@ -240,7 +237,7 @@ export default function CropPrediction() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
-                    label="Potassium (K)"
+                    label={t("crop.potassium")}
                     type="number"
                     placeholder="0-205"
                     value={formData.potassium}
@@ -250,49 +247,49 @@ export default function CropPrediction() {
                     icon={<TestTube className="w-4 h-4" />}
                   />
                   <InputField
-                    label="Temperature"
+                    label={t("crop.temperature")}
                     type="number"
                     placeholder="20-35"
                     value={formData.temperature}
                     onChange={handleInputChange("temperature")}
                     error={errors.temperature}
-                    hint="°C"
+                    hint=""
                     icon={<Thermometer className="w-4 h-4" />}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
-                    label="Humidity"
+                    label={t("crop.humidity")}
                     type="number"
                     placeholder="0-100"
                     value={formData.humidity}
                     onChange={handleInputChange("humidity")}
                     error={errors.humidity}
-                    hint="%"
+                    hint=""
                     icon={<Droplets className="w-4 h-4" />}
                   />
                   <InputField
-                    label="pH Level"
+                    label={t("crop.ph")}
                     type="number"
                     step="0.1"
                     placeholder="0-14"
                     value={formData.ph}
                     onChange={handleInputChange("ph")}
                     error={errors.ph}
-                    hint="Soil acidity"
+                    hint=""
                     icon={<Info className="w-4 h-4" />}
                   />
                 </div>
 
                 <InputField
-                  label="Annual Rainfall"
+                  label={t("crop.rainfall")}
                   type="number"
                   placeholder="0-3000"
                   value={formData.rainfall}
                   onChange={handleInputChange("rainfall")}
                   error={errors.rainfall}
-                  hint="mm per year"
+                  hint=""
                   icon={<CloudRain className="w-4 h-4" />}
                 />
 
@@ -307,12 +304,12 @@ export default function CropPrediction() {
                     {loading ? (
                       <>
                         <Loader variant="dots" size="sm" text="" />
-                        Analyzing...
+                        {t("crop.predicting")}
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-5 h-5" />
-                        Predict Crop
+                        {t("crop.predict")}
                       </>
                     )}
                   </Button>
@@ -323,7 +320,7 @@ export default function CropPrediction() {
                     onClick={handleReset}
                     disabled={loading}
                   >
-                    Reset
+                    {t("common.cancel")}
                   </Button>
                 </div>
               </form>
@@ -339,7 +336,7 @@ export default function CropPrediction() {
           >
             {loading && (
               <div className="bg-card rounded-2xl border-2 border-border p-12 shadow-card flex items-center justify-center min-h-[400px]">
-                <Loader text="Analyzing soil parameters..." />
+                <Loader text={t("crop.predicting")} />
               </div>
             )}
 
@@ -352,7 +349,7 @@ export default function CropPrediction() {
                   No Prediction Yet
                 </h3>
                 <p className="text-muted-foreground max-w-sm">
-                  Fill in the soil and climate parameters to get your personalized crop recommendation.
+                  {t("crop.subtitle")}
                 </p>
               </div>
             )}
@@ -360,7 +357,7 @@ export default function CropPrediction() {
             {!loading && result && (
               <div className="space-y-4">
                 <ResultCard
-                  title="Recommended Crop"
+                  title={t("crop.result")}
                   value={result.crop}
                   icon={<Leaf className="w-6 h-6" />}
                   variant="primary"
@@ -368,13 +365,13 @@ export default function CropPrediction() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <ResultCard
-                    title="Confidence Score"
+                    title={t("crop.confidence")}
                     value={`${result.confidence.toFixed(1)}%`}
                     icon={<Sparkles className="w-5 h-5" />}
                     variant="success"
                   />
                   <ResultCard
-                    title="Best Season"
+                    title={t("crop.season")}
                     value={result.season}
                     icon={<CloudRain className="w-5 h-5" />}
                     variant="accent"
@@ -384,7 +381,7 @@ export default function CropPrediction() {
                 <div className="bg-card rounded-xl border-2 border-border p-6 shadow-card">
                   <h3 className="font-display font-semibold text-lg text-foreground mb-4 flex items-center gap-2">
                     <Info className="w-5 h-5 text-primary" />
-                    Growing Tips
+                    {t("crop.tips")}
                   </h3>
                   <ul className="space-y-3">
                     {result.tips.map((tip, index) => (

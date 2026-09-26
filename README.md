@@ -1,73 +1,124 @@
-# Welcome to your Lovable project
+# 🌱 AgriSmart AI
 
-## Project info
+[![CI/CD Pipeline](https://github.com/akshayahirrao1/agrismart-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/akshayahirrao1/agrismart-ai/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://agrismart-ai-livid.vercel.app/)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+AgriSmart AI is a comprehensive, full-stack AI-powered Smart Agriculture System designed to empower farmers with data-driven insights. It leverages Machine Learning models to optimize crop selection, predict soil moisture levels, and detect plant diseases—ultimately aiming to increase yield and promote sustainable farming practices.
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+- 🌾 **Crop Recommendation:** Suggests the most suitable crop based on soil metrics (N, P, K, pH) and environmental factors (temperature, humidity, rainfall).
+- 💧 **Soil Moisture Prediction:** Forecasts soil moisture levels and provides smart irrigation suggestions.
+- 🍃 **Plant Disease Detection:** Identifies plant diseases from leaf images using advanced computer vision models.
+- 🌤️ **Live Weather Updates:** Integrates real-time weather data to assist in agricultural planning.
+- 🔐 **Secure Authentication:** Robust user authentication and role management using JWT.
+- 🚀 **Fully Automated CI/CD:** Automated testing (Vitest, Supertest) and deployment using GitHub Actions, Vercel, and Render.
 
-**Use Lovable**
+## 🛠️ Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+**Frontend (Client)**
+- React (Vite)
+- TypeScript
+- Tailwind CSS & shadcn/ui
+- React Router & React Context API
 
-Changes made via Lovable will be committed automatically to this repo.
+**Backend (Node API)**
+- Node.js & Express.js
+- MongoDB Atlas & Mongoose
+- JSON Web Tokens (JWT) & bcrypt
 
-**Use your preferred IDE**
+**Machine Learning Service (Python)**
+- Python 3.11
+- Flask & Flask-CORS
+- Scikit-Learn, Pandas, NumPy
+- Gunicorn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🏗️ System Architecture
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+AgriSmart AI employs a microservice-inspired architecture:
+1. **Frontend Application:** Hosts the interactive user interface and manages state. Communicates securely with the Node.js API.
+2. **Node.js Backend:** Acts as the primary gateway. It handles user authentication, data persistence, and routes complex prediction requests to the ML Service.
+3. **Python ML Service:** A dedicated, lightweight Flask API that hosts and executes pre-trained Scikit-Learn (`.pkl`) models for near real-time predictions.
 
-Follow these steps:
+## 🚀 Getting Started (Local Development)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
+- Node.js (v20+)
+- Python (v3.11+)
+- MongoDB Atlas cluster (or local MongoDB instance)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Clone the repository
+```bash
+git clone https://github.com/akshayahirrao1/agrismart-ai.git
+cd agrismart-ai
 ```
 
-**Edit a file directly in GitHub**
+### 2. Setup the ML Service (Python)
+Open a terminal and start the Flask service:
+```bash
+cd backend/ml_service
+python -m venv venv
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Windows
+.\venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
 
-**Use GitHub Codespaces**
+pip install -r requirements.prod.txt
+python app.py
+```
+*The ML service will run on `http://localhost:8000`*
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 3. Setup the Node Backend
+Open a second terminal for the Express API:
+```bash
+cd backend
+npm install
 
-## What technologies are used for this project?
+# Create a .env file based on .env.example and populate your keys
+npm run dev
+```
+*The Node API will run on `http://localhost:5000`*
 
-This project is built with:
+### 4. Setup the Frontend
+Open a third terminal for the React app:
+```bash
+# From the root directory
+npm install
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Create a .env file and set VITE_API_BASE_URL=http://localhost:5000/api
+npm run dev
+```
+*The Frontend will run on `http://localhost:5173`*
 
-## How can I deploy this project?
+## 🧪 Testing
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+The project uses `vitest` for both frontend and backend testing.
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# Run backend tests
+cd backend
+npm test
 
-Yes, you can!
+# Run frontend tests
+cd ..
+npm test
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🌐 Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The system is configured for automated CI/CD:
+- **Frontend:** Deployed on Vercel.
+- **Node Backend & ML Service:** Dockerized and deployed as separate Web Services on Render.
+- **Pipeline:** GitHub Actions runs linting, tests, and Docker build verifications on every PR. Merging to `main` triggers auto-deployment.
+
+## 👨‍💻 Author & Contact
+
+**Akshay Ahirrao**
+- 📧 Email: [akshayahirrao103@gmail.com](mailto:akshayahirrao103@gmail.com)
+- 🐙 GitHub: [@akshayahirrao1](https://github.com/akshayahirrao1)
+- 💼 LinkedIn: [Akshay Ahirrao](https://www.linkedin.com/in/akshay-ahirrao-72554032a)
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).

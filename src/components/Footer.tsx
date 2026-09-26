@@ -29,8 +29,8 @@ export default function Footer() {
 
   const socialLinks = [
     { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Github, href: "https://github.com/akshayahirrao1", label: "GitHub" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/akshay-ahirrao-72554032a", label: "LinkedIn" },
   ];
 
   return (
@@ -169,7 +169,9 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary" />
-                contact@agrismart.ai
+                <a href="mailto:akshayahirrao103@gmail.com" className="hover:text-primary transition-colors">
+                  akshayahirrao103@gmail.com
+                </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary" />
@@ -206,7 +208,7 @@ export default function Footer() {
             ))}
           </div>
           <p className="text-sm text-muted-foreground flex items-center gap-1">
-            Made with <Heart className="w-4 h-4 text-warning fill-warning animate-pulse" /> for farmers worldwide
+            Made with <Heart className="w-4 h-4 text-warning fill-warning animate-pulse" /> by Akshay Ahirrao
           </p>
         </motion.div>
       </div>

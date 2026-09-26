@@ -12,6 +12,7 @@ import Loader from "@/components/Loader";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { predictSoilMoisture as predictSoilMoistureApi, SoilType } from "@/services/api";
+import { useTranslation } from "react-i18next";
 
 interface FormData {
   soilType: string;
@@ -28,17 +29,14 @@ interface PredictionResult {
   waterAmount: string;
 }
 
-// These must exactly match the soil types the model was trained on
-// (backend/ml_service/dataset/soil_moisture.csv), and the case-sensitive
-// enum the backend now accepts (see backend/src/controllers/soil.controller.js).
-const soilTypes: { value: SoilType; label: string }[] = [
-  { value: "Alluvial", label: "Alluvial Soil" },
-  { value: "Black", label: "Black Soil" },
-  { value: "Clay", label: "Clay Soil" },
-  { value: "Laterite", label: "Laterite Soil" },
-  { value: "Loamy", label: "Loamy Soil" },
-  { value: "Red", label: "Red Soil" },
-  { value: "Sandy", label: "Sandy Soil" },
+const soilTypes: { value: SoilType; labelKey: string }[] = [
+  { value: "Alluvial", labelKey: "soil.alluvial" }, // Note: We might need to add these to i18n or keep English for ML API, we will just use english for now since it's hard to map
+  { value: "Black", labelKey: "soil.black" },
+  { value: "Clay", labelKey: "soil.clay" },
+  { value: "Laterite", labelKey: "soil.laterite" },
+  { value: "Loamy", labelKey: "soil.loamy" },
+  { value: "Red", labelKey: "soil.red" },
+  { value: "Sandy", labelKey: "soil.sandy" },
 ];
 
 const initialFormData: FormData = {
@@ -48,9 +46,6 @@ const initialFormData: FormData = {
   rainfall: "",
 };
 
-// The model outputs a single 0-100-ish moisture number and nothing else.
-// These heuristics (category, irrigation flag, water amount) are derived
-// client-side from that number — not something the model predicts.
 const classifyMoisture = (pct: number): "Low" | "Medium" | "High" => {
   if (pct < 30) return "Low";
   if (pct < 60) return "Medium";
@@ -64,6 +59,7 @@ const getWaterAmount = (pct: number): string => {
 };
 
 export default function SoilMoisture() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -135,11 +131,11 @@ export default function SoilMoisture() {
         waterAmount: getWaterAmount(moisturePercentage),
       });
       toast({
-        title: "Analysis Complete!",
-        description: `Soil moisture: ${moistureLevel}`,
+        title: t("common.success"),
+        description: `${t("soil.result")}: ${moistureLevel}`,
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to analyze soil moisture. Please try again.";
+      const message = error instanceof Error ? error.message : t("common.error");
       toast({
         title: "Analysis Failed",
         description: message,
@@ -163,15 +159,6 @@ export default function SoilMoisture() {
     setErrors({});
   };
 
-  const getMoistureColor = (level: string) => {
-    switch (level) {
-      case "Low": return "bg-warning";
-      case "Medium": return "bg-accent";
-      case "High": return "bg-sky";
-      default: return "bg-muted";
-    }
-  };
-
   return (
     <div className="min-h-screen pt-20 pb-12 bg-background">
       <div className="container mx-auto px-4">
@@ -185,11 +172,10 @@ export default function SoilMoisture() {
             <Droplets className="w-8 h-8 text-soil-foreground" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Soil Moisture Analysis
+            {t("soil.title")}
           </h1>
           <p className="text-muted-foreground">
-            Predict soil moisture levels and get smart irrigation recommendations 
-            based on environmental conditions.
+            {t("soil.subtitle")}
           </p>
         </motion.div>
 
@@ -208,7 +194,7 @@ export default function SoilMoisture() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground">Soil Type</Label>
+                  <Label className="text-sm font-medium text-foreground">{t("soil.soilType")}</Label>
                   <Select
                     value={formData.soilType}
                     onValueChange={(value) => {
@@ -219,12 +205,12 @@ export default function SoilMoisture() {
                     }}
                   >
                     <SelectTrigger className="h-12 rounded-lg border-2">
-                      <SelectValue placeholder="Select soil type" />
+                      <SelectValue placeholder={t("soil.selectSoilType")} />
                     </SelectTrigger>
                     <SelectContent>
                       {soilTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
-                          {type.label}
+                          {t(type.labelKey, type.value + " Soil")}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -236,35 +222,35 @@ export default function SoilMoisture() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputField
-                    label="Temperature"
+                    label={t("soil.temperature")}
                     type="number"
                     placeholder="20-35"
                     value={formData.temperature}
                     onChange={handleInputChange("temperature")}
                     error={errors.temperature}
-                    hint="°C"
+                    hint=""
                     icon={<Thermometer className="w-4 h-4" />}
                   />
                   <InputField
-                    label="Humidity"
+                    label={t("soil.humidity")}
                     type="number"
                     placeholder="0-100"
                     value={formData.humidity}
                     onChange={handleInputChange("humidity")}
                     error={errors.humidity}
-                    hint="%"
+                    hint=""
                     icon={<Droplets className="w-4 h-4" />}
                   />
                 </div>
 
                 <InputField
-                  label="Recent Rainfall"
+                  label={t("soil.rainfall")}
                   type="number"
                   placeholder="0-500"
                   value={formData.rainfall}
                   onChange={handleInputChange("rainfall")}
                   error={errors.rainfall}
-                  hint="mm (last 7 days)"
+                  hint="mm"
                   icon={<CloudRain className="w-4 h-4" />}
                 />
 
@@ -279,12 +265,12 @@ export default function SoilMoisture() {
                     {loading ? (
                       <>
                         <Loader variant="dots" size="sm" text="" />
-                        Analyzing...
+                        {t("soil.analyzing")}
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-5 h-5" />
-                        Predict Moisture
+                        {t("soil.analyze")}
                       </>
                     )}
                   </Button>
@@ -295,7 +281,7 @@ export default function SoilMoisture() {
                     onClick={handleReset}
                     disabled={loading}
                   >
-                    Reset
+                    {t("common.cancel")}
                   </Button>
                 </div>
               </form>
@@ -311,7 +297,7 @@ export default function SoilMoisture() {
           >
             {loading && (
               <div className="bg-card rounded-2xl border-2 border-border p-12 shadow-card flex items-center justify-center min-h-[400px]">
-                <Loader text="Analyzing soil conditions..." variant="leaf" />
+                <Loader text={t("soil.analyzing")} variant="leaf" />
               </div>
             )}
 
@@ -324,7 +310,7 @@ export default function SoilMoisture() {
                   No Analysis Yet
                 </h3>
                 <p className="text-muted-foreground max-w-sm">
-                  Enter environmental parameters to predict soil moisture levels.
+                  {t("soil.subtitle")}
                 </p>
               </div>
             )}
@@ -335,7 +321,7 @@ export default function SoilMoisture() {
                 <div className="bg-card rounded-xl border-2 border-border p-6 shadow-card">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-display font-semibold text-lg text-foreground">
-                      Moisture Level
+                      {t("soil.result")}
                     </h3>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                       result.moistureLevel === "Low" ? "bg-warning/20 text-warning" :
@@ -372,8 +358,8 @@ export default function SoilMoisture() {
 
                 {/* Irrigation Status */}
                 <ResultCard
-                  title="Irrigation Status"
-                  value={result.irrigationNeeded ? "Irrigation Needed" : "No Irrigation Needed"}
+                  title={t("soil.irrigation")}
+                  value={result.irrigationNeeded ? t("soil.yes") : t("soil.no")}
                   subtitle={result.waterAmount}
                   icon={result.irrigationNeeded ? 
                     <AlertTriangle className="w-6 h-6" /> : 
@@ -386,7 +372,7 @@ export default function SoilMoisture() {
                 <div className="bg-card rounded-xl border-2 border-border p-6 shadow-card">
                   <h3 className="font-display font-semibold text-lg text-foreground mb-3 flex items-center gap-2">
                     <Info className="w-5 h-5 text-primary" />
-                    Recommendation
+                    {t("soil.recommendation")}
                   </h3>
                   <p className="text-foreground">{result.recommendation}</p>
                 </div>
